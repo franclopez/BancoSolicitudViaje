@@ -61,7 +61,7 @@
   <div data-role="page" data-control-title="List" data-theme="b" id="List"
   style="background: url('img/fondo.png') no-repeat">
       <div data-theme="b" data-role="header">
-          <a id="logout" data-role="button" href="#" data-icon="home" data-iconpos="left"
+          <a id="logout" data-role="button" href="#" data-icon="home" data-iconpos="left" 
           class="ui-btn-left">
               Salir
           </a>
@@ -209,19 +209,19 @@
  <!--Solicitudes-->
 	
 	<div data-role="page" data-control-title="TV1" data-theme="b" id="solicitud"
-	style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	style="background: url('img/fondo.png') repeat">
 	    <div data-theme="b" data-role="header">
 	        <h3>
 	            Solicitudes
 	        </h3>
-	        <a id="salir" data-role="button" data-theme="b" href="#logon" data-icon="home"
+	        <a id="salir" data-role="button" data-theme="b" href="#" data-icon="home" onclick="showConfirmLogout();"
 	        data-iconpos="left" class="ui-btn-left">
 	            Salir
 	        </a>
 	    </div>
 	    <div data-role="content">
 	        <div data-controltype="htmlblock">
-	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+			    <img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
 	            <p>
 	            </p>
 	            <div data-role="fieldcontain" data-controltype="searchinput" type="search"
@@ -256,7 +256,7 @@
 
 	<!--PopUp-->
 	<div data-role="page" data-control-title="TV1_PU" data-theme="b" id="popup"
-	style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	style="background: url('img/fondo.png') repeat">
 	    <div data-theme="b" data-role="header">
 	        <h3>
 	            Detalle
@@ -267,7 +267,7 @@
 	    </div>
 	    <div data-role="content">
 	        <div style="" data-controltype="image">
-	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+	            <img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
 	        </div>
 	        <ul id="listsolicitud" data-role="listview" data-divider-theme="b" data-inset="true">
 	            <li data-role="list-divider" role="heading">
@@ -353,7 +353,7 @@
 	
 	<!--SolicitudAnticipo-->
 	<div data-role="page" data-control-title="TV2" data-theme="b" id="solicitudanticipo"
-	style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	style="background: url('img/fondo.png') repeat">
 	    <div data-theme="b" data-role="header">
 	        <h3>
 	            Solicitud
@@ -362,14 +362,14 @@
 	        data-icon="back" data-iconpos="left">
 	            Atras
 	        </a>
-	        <a id="salir2" data-role="button" data-theme="b" href="#logon" data-icon="refresh"
+	        <a id="salir2" data-role="button" data-theme="b" href="#" data-icon="refresh" onclick="showConfirmLogout();"
 	        data-iconpos="left" class="ui-btn-right">
 	            Salir
 	        </a>
 	    </div>
 	    <div data-role="content">
 	        <div style="" data-controltype="image">
-	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+				<img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
 	        </div>
 	        <div data-role="fieldcontain" data-controltype="dateinput">
 	            <label for="fecha_inicio">
@@ -498,9 +498,10 @@
 	
 	<!--Mensaje-->
 	
-	<div data-role="page" data-control-title="TV3" id="mensaje" style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	<div data-role="page" data-control-title="TV3" id="mensaje" 
+	style="background: url('img/fondo.png') repeat">
 	    <div data-theme="b" data-role="header">
-	        <a id="salir3" data-role="button" href="#logon" data-icon="refresh" data-iconpos="left"
+	        <a id="salir3" data-role="button" href="#" data-icon="refresh" data-iconpos="left" onclick="showConfirmLogout();"
 	        class="ui-btn-right">
 	            Salir
 	        </a>
@@ -513,7 +514,7 @@
 	    </div>
 	    <div data-role="content">
 	        <div style="" data-controltype="image">
-	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+				<img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
 	        </div>
 	        <div data-role="fieldcontain" data-controltype="textarea">
 	            <label for="mensajesys">
