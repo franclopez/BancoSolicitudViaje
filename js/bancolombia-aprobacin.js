@@ -119,7 +119,7 @@ $(function() {
 		$('#bienvenidaText').html(txtBienv);
 		console.log(txtBienv);
 		var query = new Kinvey.Query();
-	    query.equalTo('Estado', 0);
+	    query.equalTo('Estado', "0");
 		var promiseSolicitudes = Kinvey.DataStore.find('Solicitudes', query, {
 			success: function(items) {
 			   console.log("Consulta satisfactoria de solicitudes");
@@ -326,7 +326,7 @@ $(function() {
 	
 	//Inicio Insert
 	
-	$("#ingresar").on("click", function() {
+	 $("#ingresar").on("click", function() {
                 validarUsuario();
             });
             
@@ -355,7 +355,7 @@ $(function() {
                 limpiarFormulario();
                 cargarPaisesO('');
                 cargarPaisesD('');
-                cargarMonedas();
+                cargarMonedas('');
                 cargarClaseViajes();
                 cargarActividades();
                 cargarMotivos();
@@ -407,7 +407,6 @@ $(function() {
                 ingresarSolicitud();
                 limpiarFormulario();
             });
-	
 	//Fin Insert
 	
 });
@@ -492,530 +491,542 @@ $(function() {
 
 
 	function cargarPopUp(idSolicitud){
-		solicitud = idSolicitud;
-		$.mobile.changePage("#popup", {
-			transition: "pop",
-			reverse: false,
-			changeHash: false
-		});
-	}
+    solicitud = idSolicitud;
+    $.mobile.changePage("#popup", {
+        transition: "pop",
+        reverse: false,
+        changeHash: false
+    });
+}
 
-	function validarUsuario(){    
-		$.mobile.loading('show');
-		limpiarMensaje($('#mensaje'));
-		
-		var usuario = $('#usuario').val();
-		var password = $('#password').val();
-		
-		if(usuario != null && password != null && usuario != '' && password != ''){
-			
-			var query = new Kinvey.Query();
-			query.equalTo('usuario', usuario);
-			Kinvey.DataStore.find('usuarios', query, {
-				success: function(response) {
-				   
-					if(password == response[0].contrasena){
-						idUsuario = response[0].usuario;
-						nombreUsuario = response[0].nombre_usuario;
-						$.mobile.changePage("#solicitud", {
-								transition: "pop",
-								reverse: false,
-								changeHash: false
-						});
-						
-						$( "#resetButton" ).click();
-					} else {
-						$('#mensaje').show();
-						$('#mensaje').addClass('warning');
-						$('#mensaje').text( 'El nombre de usuario o la contrase\u00F1a introducidos no son correctos.' );
-					}                
-					$.mobile.loading('hide');
-				},
-				error: function(error){
-					console.log(error);
-					$('#mensaje').show();
-					$('#mensaje').addClass('warning');
-					$('#mensaje').text( 'El nombre de usuario o la contrase\u00F1a introducidos no son correctos.' );
-					$.mobile.loading('hide');
-				}
-			});
-		   
-			
-		} else {
-			$('#mensaje').show();
-			$('#mensaje').addClass('warning');
-			$('#mensaje').text( 'Debe ingresar el nombre de usuario y la contrase\u00F1a.' );
-			$.mobile.loading('hide');
-		}  
-		
-	}
+function validarUsuario(){    
+    $.mobile.loading('show');
+    limpiarMensaje($('#mensaje'));
+    
+    var usuario = $('#usuario').val();
+    var password = $('#password').val();
+    
+    if(usuario != null && password != null && usuario != '' && password != ''){
+        
+        var query = new Kinvey.Query();
+        query.equalTo('usuario', usuario);
+        Kinvey.DataStore.find('usuarios', query, {
+            success: function(response) {
+               
+                if(password == response[0].contrasena){
+                    idUsuario = response[0].usuario;
+                    nombreUsuario = response[0].nombre_usuario;
+                    $.mobile.changePage("#solicitud", {
+                            transition: "pop",
+                            reverse: false,
+                            changeHash: false
+                    });
+                    
+                    $( "#resetButton" ).click();
+                } else {
+                    $('#mensaje').show();
+                    $('#mensaje').addClass('warning');
+                    $('#mensaje').text( 'El nombre de usuario o la contrase\u00F1a introducidos no son correctos.' );
+                }                
+                $.mobile.loading('hide');
+            },
+            error: function(error){
+                console.log(error);
+                $('#mensaje').show();
+                $('#mensaje').addClass('warning');
+                $('#mensaje').text( 'El nombre de usuario o la contrase\u00F1a introducidos no son correctos.' );
+                $.mobile.loading('hide');
+            }
+        });
+       
+        
+    } else {
+        $('#mensaje').show();
+        $('#mensaje').addClass('warning');
+        $('#mensaje').text( 'Debe ingresar el nombre de usuario y la contrase\u00F1a.' );
+        $.mobile.loading('hide');
+    }  
+    
+}
 
-	function salir(){
-		
-		$('#usuario').val("");
-		$('#password').val("");
-		
-	}
+function salir(){
+    
+    $('#usuario').val("");
+    $('#password').val("");
+    
+}
 
-	function iniciarCampos(){
-		
-		$("#mensaje").hide();
-		$("#mensajeVinculacion").hide();
-		
-		$("#segmento").attr('readonly', true);
-		$("#subsegmento").attr('readonly', true);
-		$("#tamanoComercial").attr('readonly', true);
-		$("#llaveCRM").attr('readonly', true);
-		$("#calificacionInterna").attr('readonly', true);
-		$("#estado").attr('readonly', true);
-	}
+function iniciarCampos(){
+    
+    $("#mensaje").hide();
+    $("#mensajeVinculacion").hide();
+    
+    $("#segmento").attr('readonly', true);
+    $("#subsegmento").attr('readonly', true);
+    $("#tamanoComercial").attr('readonly', true);
+    $("#llaveCRM").attr('readonly', true);
+    $("#calificacionInterna").attr('readonly', true);
+    $("#estado").attr('readonly', true);
+}
 
-	function consultarSolicitud(){
-		
-		var user = Kinvey.getActiveUser();
-		var query = new Kinvey.Query();
-		query.equalTo('id_usuario', idUsuario);
-		query.ascending('id_solicitud');
-		var estado;
-		//Query q = mKinveyClient.query();
-		//q.addSort("id_solicitud", SortOrder.Asc);
-		$('#listusuario').empty();
-		$('#listusuario').append('<li data-role="listview" data-filter="true" data-divider-theme="b" data-inset="true" data-filter-placeholder="bienvenida">Bienvenido ' + nombreUsuario + '</li>');
-		$.mobile.loading('show');
-		var promiseSolicitudes = Kinvey.DataStore.find('Solicitudes', query, {
-			   success: function(solicitudes) {
-				  console.log("Consulta satisfactoria de Solicitudes");
-				  $('#ListaSolicitudes').empty();
-				  $('#ListaSolicitudes').append('<li data-role="listview" data-filter="true" data-divider-theme="b" data-inset="true" data-filter-placeholder="Solicitudes">Solicitudes</li>');
-				  for (var i = 0; i < solicitudes.length; i++){
-					  if ( solicitudes[i].Estado == 0){
-						estado = "Pendiente";
-					  }else if ( solicitudes[i].Estado == 1){
-						estado = "Aprobado";  
-					  }else{
-						estado = "Rechazado";  
-					  }
-					  $('#ListaSolicitudes').append('<li data-theme="c"><a href="" data-transition="slide" onclick="cargarPopUp('+solicitudes[i].id_solicitud+')" data-id="' 
-					  +solicitudes[i].id_solicitud + '"><b class="highlight">N° Solicitud:</b>  ' + solicitudes[i].id_solicitud + '<br/><b class="highlight">Fecha:</b> '
-					  + solicitudes[i].fecha_inicio + '<br/><b class="highlight">Estado:</b> ' + estado +'</a></li>');
-					  $('#ListaSolicitudes').listview('refresh');
-					  $.mobile.loading('hide');
-				  }
-			   },
-			   error: function(e) {
-				   console.log("No ");
-				   $.mobile.loading('hide');
-			   }
-			});
-		$.mobile.loading('hide');
-	   
-	}
+function consultarSolicitud(){
+    
+    var user = Kinvey.getActiveUser();
+    var query = new Kinvey.Query();
+    query.equalTo('id_usuario', idUsuario);
+    query.ascending('id_solicitud');
+    var estado;
+    //Query q = mKinveyClient.query();
+    //q.addSort("id_solicitud", SortOrder.Asc);
+    $('#listusuario').empty();
+    $('#listusuario').append('<li data-role="listview" data-filter="true" data-divider-theme="b" data-inset="true" data-filter-placeholder="bienvenida">Bienvenido ' + nombreUsuario + '</li>');
+    $.mobile.loading('show');
+    var promiseSolicitudes = Kinvey.DataStore.find('Solicitudes', query, {
+           success: function(solicitudes) {
+              console.log("Consulta satisfactoria de Solicitudes");
+              $('#ListaSolicitudes').empty();
+              $('#ListaSolicitudes').append('<li data-role="listview" data-filter="true" data-divider-theme="b" data-inset="true" data-filter-placeholder="Solicitudes">Solicitudes</li>');
+              for (var i = 0; i < solicitudes.length; i++){
+                  if ( solicitudes[i].Estado == 0){
+                    estado = "Pendiente";
+                  }else if ( solicitudes[i].Estado == 1){
+                    estado = "Aprobado";  
+                  }else{
+                    estado = "Rechazado";  
+                  }
+                  $('#ListaSolicitudes').append('<li data-theme="c"><a href="" data-transition="slide" onclick="cargarPopUp('+solicitudes[i].id_solicitud+')" data-id="' 
+                  +solicitudes[i].id_solicitud + '"><b class="highlight">N° Solicitud:</b>  ' + solicitudes[i].id_solicitud + '<br/><b class="highlight">Fecha:</b> '
+                  + solicitudes[i].fecha_inicio + '<br/><b class="highlight">Estado:</b> ' + estado +'</a></li>');
+                  $('#ListaSolicitudes').listview('refresh');
+                  $.mobile.loading('hide');
+              }
+           },
+           error: function(e) {
+               console.log("No ");
+               $.mobile.loading('hide');
+           }
+        });
+    $.mobile.loading('hide');
+   
+}
 
-	function consultarMotivo(id_motivo){
-		var queryMotivo = new Kinvey.Query();
-		queryMotivo.equalTo('id_motivo', id_motivo);
-		var promiseMotivo = Kinvey.DataStore.find('motivos', queryMotivo, {
-			success: function(motivos) {
-			   console.log("Consulta satisfactoria de Motivos");
-			   motivo = motivos[0].motivo;
-			   $('#inmotivo').val(motivo);
-			   $('#inmotivo').attr('readonly', true);
-			}
-		});
-	}
+function consultarMotivo(id_motivo){
+    var queryMotivo = new Kinvey.Query();
+    queryMotivo.equalTo('id_motivo', id_motivo);
+    var promiseMotivo = Kinvey.DataStore.find('motivos', queryMotivo, {
+        success: function(motivos) {
+           console.log("Consulta satisfactoria de Motivos");
+           motivo = motivos[0].motivo;
+           $('#inmotivo').val(motivo);
+           $('#inmotivo').attr('readonly', true);
+        }
+    });
+}
 
-	function consultarClaseViaje(id_claseviaje){
-		var queryClaseViaje = new Kinvey.Query();
-		queryClaseViaje.equalTo('id_claseviaje', id_claseviaje);
-		var promiseClaseViaje = Kinvey.DataStore.find('claseViaje', queryClaseViaje, {
-			success: function(clase_viajes) {
-			   console.log("Consulta satisfactoria de Clases de Viaje");
-			   claseViaje = clase_viajes[0].clase_viaje;
-			   $('#inclase_viaje').val(claseViaje);
-			   $('#inclase_viaje').attr('readonly', true);
-			}
-		});
-	}
+function consultarClaseViaje(id_claseviaje){
+    var queryClaseViaje = new Kinvey.Query();
+    queryClaseViaje.equalTo('id_claseviaje', id_claseviaje);
+    var promiseClaseViaje = Kinvey.DataStore.find('claseViaje', queryClaseViaje, {
+        success: function(clase_viajes) {
+           console.log("Consulta satisfactoria de Clases de Viaje");
+           claseViaje = clase_viajes[0].clase_viaje;
+           $('#inclase_viaje').val(claseViaje);
+           $('#inclase_viaje').attr('readonly', true);
+        }
+    });
+}
 
-	function consultarActividad(id_actividad){
-		var queryActividad = new Kinvey.Query();
-		queryActividad.equalTo('id_actividad', id_actividad);
-		var promiseActividades = Kinvey.DataStore.find('actividades', queryActividad, {
-			success: function(actividades) {
-			   console.log("Consulta satisfactoria de Actividades");
-			   actividad = actividades[0].actividad;
-			   $('#inactividad').val(actividad);
-			   $('#inactividad').attr('readonly', true);
-			}
-		});
-	}
+function consultarActividad(id_actividad){
+    var queryActividad = new Kinvey.Query();
+    queryActividad.equalTo('id_actividad', id_actividad);
+    var promiseActividades = Kinvey.DataStore.find('actividades', queryActividad, {
+        success: function(actividades) {
+           console.log("Consulta satisfactoria de Actividades");
+           actividad = actividades[0].actividad;
+           $('#inactividad').val(actividad);
+           $('#inactividad').attr('readonly', true);
+        }
+    });
+}
 
-	function consultarDetalle(){
-		var user = Kinvey.getActiveUser();
-		var query = new Kinvey.Query();
-		query.equalTo('id_solicitud', solicitud);
-		var estado;
-		$('#listsolicitud').empty();
-		$('#listsolicitud').append('<li data-role="list-divider" data-divider-theme="b" role="heading">Solicitud ' + solicitud + '</li>');
-		
-		var promiseSolicitudes = Kinvey.DataStore.find('Solicitudes', query, {
-			   success: function(solicitud1) {
-				  console.log("Consulta satisfactoria de Solicitud");
-					  $.mobile.loading('show');
-					  var id_motivo = solicitud1[0].id_motivo;
-					  var id_claseviaje = solicitud1[0].id_claseviaje;
-					  var id_actividad = solicitud1[0].id_actividad;
-					  var pais_origen = solicitud1[0].pais_origen;
-					  var pais_destino = solicitud1[0].pais_destino;
-					  var ciudad_origen = solicitud1[0].ciudad_origen;
-					  var ciudad_destino = solicitud1[0].ciudad_destino;
-					  if(id_motivo != ''){
-						  consultarMotivo(id_motivo);
-					  }
-					  if(id_claseviaje != ''){
-						 consultarClaseViaje(id_claseviaje);
-					  }
-					  if(id_actividad != ''){
-						  consultarActividad(id_actividad);
-					  }
-					  
-					  cargarPaisesO(pais_origen);
-					  cargarPaisesD(pais_destino);
-					  cargarCiudadesO(ciudad_origen);
-					  cargarCiudadesD(ciudad_destino);
-					  var estado;
-					  if ( solicitud1[0].Estado == 0){
-						estado = "Pendiente";
-					  }else if ( solicitud1[0].Estado == 1){
-						estado = "Aprobado";  
-					  }else{
-						estado = "Rechazado";  
-					  }
-					  
-					  $('#infecha_inicio').val(solicitud1[0].fecha_inicio);
-					  $('#infecha_inicio').attr('readonly', true);
-					  $('#infecha_final').val(solicitud1[0].fecha_fin);
-					  $('#infecha_final').attr('readonly', true);
-					  $('#inestado').val(estado);
-					  $('#inestado').attr('readonly', true);
-					  $('#tadetalle_estado').val(solicitud1[0].DetalleAprobacion);
-					  $('#tadetalle_estado').attr('readonly', true);
-					  $.mobile.loading('hide');
-			   },
-			   error: function(e) {
-				   console.log("No ");
-				   $.mobile.loading('hide');
-			   }
-			});
-		$.mobile.loading('hide');
-	   
-	}
+function consultarDetalle(){
+    var user = Kinvey.getActiveUser();
+    var query = new Kinvey.Query();
+    query.equalTo('id_solicitud', solicitud);
+    var estado;
+    $('#listsolicitud').empty();
+    $('#listsolicitud').append('<li data-role="list-divider" data-divider-theme="b" role="heading">Solicitud ' + solicitud + '</li>');
+    
+    var promiseSolicitudes = Kinvey.DataStore.find('Solicitudes', query, {
+           success: function(solicitud1) {
+              console.log("Consulta satisfactoria de Solicitud");
+                  $.mobile.loading('show');
+                  var id_motivo = solicitud1[0].id_motivo;
+                  var id_claseviaje = solicitud1[0].id_claseviaje;
+                  var id_actividad = solicitud1[0].id_actividad;
+                  var pais_origen = solicitud1[0].pais_origen;
+                  var pais_destino = solicitud1[0].pais_destino;
+                  var ciudad_origen = solicitud1[0].ciudad_origen;
+                  var ciudad_destino = solicitud1[0].ciudad_destino;
+                  var id_moneda = solicitud1[0].moneda;
+                  if(id_motivo != ''){
+                      consultarMotivo(id_motivo);
+                  }
+                  if(id_claseviaje != ''){
+                     consultarClaseViaje(id_claseviaje);
+                  }
+                  if(id_actividad != ''){
+                      consultarActividad(id_actividad);
+                  }
+                  
+                  cargarPaisesO(pais_origen);
+                  cargarPaisesD(pais_destino);
+                  cargarCiudadesO(ciudad_origen);
+                  cargarCiudadesD(ciudad_destino);
+                  cargarMonedas(id_moneda);
+                  var estado;
+                  if ( solicitud1[0].Estado == 0){
+                    estado = "Pendiente";
+                  }else if ( solicitud1[0].Estado == 1){
+                    estado = "Aprobado";  
+                  }else{
+                    estado = "Rechazado";  
+                  }
+                  
+                  $('#infecha_inicio').val(solicitud1[0].fecha_inicio);
+                  $('#infecha_inicio').attr('readonly', true);
+                  $('#infecha_final').val(solicitud1[0].fecha_fin);
+                  $('#infecha_final').attr('readonly', true);
+                  $('#inanticipo').val(solicitud1[0].Anticipo);
+                  $('#inanticipo').attr('readonly', true);
+                  $('#inestado').val(estado);
+                  $('#inestado').attr('readonly', true);
+                  $('#tadetalle_estado').val(solicitud1[0].DetalleAprobacion);
+                  $('#tadetalle_estado').attr('readonly', true);
+                  $.mobile.loading('hide');
+           },
+           error: function(e) {
+               console.log("No ");
+               $.mobile.loading('hide');
+           }
+        });
+    $.mobile.loading('hide');
+   
+}
 
-	function cargarPaisesO(id_pais){
-		
-		var queryPaises = new Kinvey.Query();
-		if(id_pais != ''){
-			queryPaises.equalTo('id_pais', id_pais);
-		}
-		queryPaises.ascending('pais');
-		var promisepaises = Kinvey.DataStore.find('paises', queryPaises, {
-			success: function(paiseso) {
-				if(id_pais != ''){
-				   paisO = paiseso[0].pais;
-				   $('#inpais_origen').val(paisO);
-				   $('#inpais_origen').attr('readonly', true);
-				}else{    
-				   var list = $("#pais_origen");
-				   $.each(paiseso, function(index, paiso) {
-					  list.append(new Option(paiso.pais, paiso.id_pais));
-				   });
-				}
-			}
-		});
-		
-	}
+function cargarPaisesO(id_pais){
+    
+    var queryPaises = new Kinvey.Query();
+    if(id_pais != ''){
+        queryPaises.equalTo('id_pais', id_pais);
+    }
+    queryPaises.ascending('pais');
+    var promisepaises = Kinvey.DataStore.find('paises', queryPaises, {
+        success: function(paiseso) {
+            if(id_pais != ''){
+               paisO = paiseso[0].pais;
+               $('#inpais_origen').val(paisO);
+               $('#inpais_origen').attr('readonly', true);
+            }else{    
+               var list = $("#pais_origen");
+               $.each(paiseso, function(index, paiso) {
+                  list.append(new Option(paiso.pais, paiso.id_pais));
+               });
+            }
+        }
+    });
+    
+}
 
-	function cargarPaisesD(id_pais){
-		
-		var queryPaises = new Kinvey.Query();
-		queryPaises.ascending('pais');
-		if(id_pais != ''){
-			queryPaises.equalTo('id_pais', id_pais);
-		}
-		var promisepaises = Kinvey.DataStore.find('paises', queryPaises, {
-			success: function(paisesd) {
-				if(id_pais != ''){
-					paisD = paisesd[0].pais;
-					$('#inpais_destino').val(paisD);
-					$('#inpais_destino').attr('readonly', true);
-				}else{
-					var list = $("#pais_destino");
-					$.each(paisesd, function(index, paisd) {
-					list.append(new Option(paisd.pais, paisd.id_pais));
-					});
-				}
-			}
-		});
-		
-	}
+function cargarPaisesD(id_pais){
+    
+    var queryPaises = new Kinvey.Query();
+    queryPaises.ascending('pais');
+    if(id_pais != ''){
+        queryPaises.equalTo('id_pais', id_pais);
+    }
+    var promisepaises = Kinvey.DataStore.find('paises', queryPaises, {
+        success: function(paisesd) {
+            if(id_pais != ''){
+                paisD = paisesd[0].pais;
+                $('#inpais_destino').val(paisD);
+                $('#inpais_destino').attr('readonly', true);
+            }else{
+                var list = $("#pais_destino");
+                $.each(paisesd, function(index, paisd) {
+                list.append(new Option(paisd.pais, paisd.id_pais));
+                });
+            }
+        }
+    });
+    
+}
 
-	function cargarCiudadesO(id_ciudad){
-		var queryCiudadesO = new Kinvey.Query();
-		queryCiudadesO.equalTo('id_ciudad', id_ciudad);
-		var promiseCiudad = Kinvey.DataStore.find('ciudades', queryCiudadesO, {
-			success: function(ciudado) {
-			   console.log("Consulta satisfactoria de Ciudad"+ciudado[0]);
-			   ciudadO = ciudado[0].ciudad;
-			   $('#inciudad_origen').val(ciudadO);
-			   $('#inciudad_origen').attr('readonly', true);
-			}
-		});
-	}
+function cargarCiudadesO(id_ciudad){
+    var queryCiudadesO = new Kinvey.Query();
+    queryCiudadesO.equalTo('id_ciudad', id_ciudad);
+    var promiseCiudad = Kinvey.DataStore.find('ciudades', queryCiudadesO, {
+        success: function(ciudado) {
+           console.log("Consulta satisfactoria de Ciudad"+ciudado[0]);
+           ciudadO = ciudado[0].ciudad;
+           $('#inciudad_origen').val(ciudadO);
+           $('#inciudad_origen').attr('readonly', true);
+        }
+    });
+}
 
-	function cargarCiudadesD(id_ciudad){
-		var queryCiudadesD = new Kinvey.Query();
-		queryCiudadesD.equalTo('id_ciudad', id_ciudad);
-		var promiseCiudad = Kinvey.DataStore.find('ciudades', queryCiudadesD, {
-			success: function(ciudadd) {
-			   console.log("Consulta satisfactoria de Ciudad Destino");
-			   ciudadD = ciudadd[0].ciudad;
-			   $('#inciudad_destino').val(ciudadD);
-			   $('#inciudad_destino').attr('readonly', true);
-			}
-		});
-	}
+function cargarCiudadesD(id_ciudad){
+    var queryCiudadesD = new Kinvey.Query();
+    queryCiudadesD.equalTo('id_ciudad', id_ciudad);
+    var promiseCiudad = Kinvey.DataStore.find('ciudades', queryCiudadesD, {
+        success: function(ciudadd) {
+           console.log("Consulta satisfactoria de Ciudad Destino");
+           ciudadD = ciudadd[0].ciudad;
+           $('#inciudad_destino').val(ciudadD);
+           $('#inciudad_destino').attr('readonly', true);
+        }
+    });
+}
 
-	function cargarMonedas(){
-		
-		var queryMoneda = new Kinvey.Query();
-		queryMoneda.ascending('moneda');
-		var promisemoneda = Kinvey.DataStore.find('monedas', queryMoneda, {
-			success: function(monedas) {
-			   var list = $("#moneda");
-			   $.each(monedas, function(index, moneda) {
-				  list.append(new Option(moneda.moneda, moneda.id_moneda));
-			   });
-			}
-		});
-		
-	}
+function cargarMonedas(id_moneda){
+    
+    var queryMoneda = new Kinvey.Query();
+    queryMoneda.ascending('moneda');
+    if(id_moneda != ''){
+        queryMoneda.equalTo('id_moneda', id_moneda);
+    }
+    var promisemoneda = Kinvey.DataStore.find('monedas', queryMoneda, {
+        success: function(monedas) {
+            if(id_moneda != ''){
+                $('#inmoneda').val(monedas[0].moneda);
+                  $('#inmoneda').attr('readonly', true);
+            }else{
+               var list = $("#moneda");
+               $.each(monedas, function(index, moneda) {
+                  list.append(new Option(moneda.moneda, moneda.id_moneda));
+                });
+            }
+        }
+    });
+    
+}
 
-	function cargarClaseViajes(){
-		
-		var queryClaseViajes = new Kinvey.Query();
-		queryClaseViajes.ascending('clase_viaje');
-		var promiseclaseviaje = Kinvey.DataStore.find('claseViaje', queryClaseViajes, {
-			success: function(claseViajes) {
-			   var list = $("#clase_viaje");
-			   $.each(claseViajes, function(index, claseViaje) {
-				  list.append(new Option(claseViaje.clase_viaje, claseViaje.id_claseviaje));
-			   });
-			}
-		});
-		
-	}
+function cargarClaseViajes(){
+    
+    var queryClaseViajes = new Kinvey.Query();
+    queryClaseViajes.ascending('clase_viaje');
+    var promiseclaseviaje = Kinvey.DataStore.find('claseViaje', queryClaseViajes, {
+        success: function(claseViajes) {
+           var list = $("#clase_viaje");
+           $.each(claseViajes, function(index, claseViaje) {
+              list.append(new Option(claseViaje.clase_viaje, claseViaje.id_claseviaje));
+           });
+        }
+    });
+    
+}
 
-	function cargarActividades(){
-		
-		var queryActividad = new Kinvey.Query();
-		queryActividad.ascending('actividad');
-		var promiseactividad = Kinvey.DataStore.find('actividades', queryActividad, {
-			success: function(actividades) {
-			   var list = $("#actividad");
-			   $.each(actividades, function(index, actividad) {
-				  list.append(new Option(actividad.actividad, actividad.id_actividad));
-			   });
-			}
-		});
-		
-	}
+function cargarActividades(){
+    
+    var queryActividad = new Kinvey.Query();
+    queryActividad.ascending('actividad');
+    var promiseactividad = Kinvey.DataStore.find('actividades', queryActividad, {
+        success: function(actividades) {
+           var list = $("#actividad");
+           $.each(actividades, function(index, actividad) {
+              list.append(new Option(actividad.actividad, actividad.id_actividad));
+           });
+        }
+    });
+    
+}
 
-	function cargarMotivos(){
-		
-		var queryMotivos = new Kinvey.Query();
-		queryMotivos.ascending('motivo');
-		var promisemotivo = Kinvey.DataStore.find('motivos', queryMotivos, {
-			success: function(motivos) {
-			   var list = $("#cmbMotivo");
-			   $.each(motivos, function(index, motivo) {
-				  list.append(new Option(motivo.motivo, motivo.id_motivo));
-			   });
-			}
-		});
-		
-	}
+function cargarMotivos(){
+    
+    var queryMotivos = new Kinvey.Query();
+    queryMotivos.ascending('motivo');
+    var promisemotivo = Kinvey.DataStore.find('motivos', queryMotivos, {
+        success: function(motivos) {
+           var list = $("#cmbMotivo");
+           $.each(motivos, function(index, motivo) {
+              list.append(new Option(motivo.motivo, motivo.id_motivo));
+           });
+        }
+    });
+    
+}
 
-	var error = '';
+var error = '';
 
-	function ingresarSolicitud(){
-		datosSolicitud.fecha_inicio = $('#fecha_inicio').val();
-				datosSolicitud.fecha_fin = $('#fecha_fin').val();
-				datosSolicitud.pais_origen = $('#pais_origen').val();
-				datosSolicitud.ciudad_origen = $('#ciudad_origen').val();
-				datosSolicitud.pais_destino = $('#pais_destino').val();
-				datosSolicitud.ciudad_destino = $('#ciudad_destino').val();
-				datosSolicitud.Anticipo = $('#anticipo').val();
-				datosSolicitud.moneda = $('#moneda').val();
-				datosSolicitud.id_claseviaje = parseInt($('#clase_viaje').val());
-				datosSolicitud.Estado = 0;
-				datosSolicitud.id_usuario = idUsuario;
-				datosSolicitud.id_actividad = parseInt($('#actividad').val());
-				datosSolicitud.id_motivo = parseInt($('#cmbMotivo').val());
-				datosSolicitud.comentarios = $('#comentarios').val();
-				console.log("Datos: " + datosSolicitud);
-				if (datosSolicitud.fecha_inicio == '' || datosSolicitud.fecha_fin == '' || 
-					datosSolicitud.pais_origen == '' || datosSolicitud.ciudad_origen == '' ||
-					datosSolicitud.pais_destino == '' ||datosSolicitud.ciudad_destino == '' || 
-					datosSolicitud.anticipo == '' || datosSolicitud.moneda == ''){
-						error = 'Se deben diligenciar todos los campos';
-				}
-				if(isNaN(datosSolicitud.Anticipo)){
-					error = 'No se permiten caracteres en el campo moneda';
-				}
-				if(datosSolicitud.fecha_inicio > datosSolicitud.fecha_fin){
-					error = 'La fecha de inicio no puede ser mayor a la fecha final';
-				}
-		var queryConsec = new Kinvey.Query();
-		queryConsec.descending('id_solicitud');
-		queryConsec.limit(1);
-		var promisemotivo = Kinvey.DataStore.find('Solicitudes', queryConsec, {
-			success: function(consecutivo) {
-				var solicitudId = consecutivo[0].id_solicitud + 1;
-				console.log("Consecutivo: "+ solicitudId);
-				datosSolicitud.id_solicitud = solicitudId; 
-				
-			}
-		});
-		
-		promisemotivo.then( function() {
-			$.mobile.loading('show');
-			
-			if (error != ''){
-				console.log(error);
-				$('#mensaje1').show();
-				$('#mensaje1').addClass('warning');
-				$('#mensaje1').text(error);
-				cargarPaisesO('');
-				cargarPaisesD('');
-				cargarMonedas();
-				cargarClaseViajes();
-				cargarActividades();
-				cargarMotivos();
-				
-			}else{
-				Kinvey.DataStore.save('Solicitudes', datosSolicitud, {
-					success: function(response) {
-						console.log("Solicitud Creada con Éxito");
-						$.mobile.changePage("#mensaje", {
-								transition: "pop",
-								reverse: false,
-								changeHash: false
-						});
-						$('#mensajesys').val("La solicitud ha sido creada con Éxito con el número " + datosSolicitud.id_solicitud);
-						$('#mensajesys').attr('readonly', true);
-						limpiarFormulario();
-					},
-					error: function(error){
-						console.log(error);
-						$.mobile.loading('hide');
-					}
-				})
-			}
-			$.mobile.loading('hide');
-		});
+function ingresarSolicitud(){
+    datosSolicitud.fecha_inicio = $('#fecha_inicio').val();
+            datosSolicitud.fecha_fin = $('#fecha_fin').val();
+            datosSolicitud.pais_origen = $('#pais_origen').val();
+            datosSolicitud.ciudad_origen = $('#ciudad_origen').val();
+            datosSolicitud.pais_destino = $('#pais_destino').val();
+            datosSolicitud.ciudad_destino = $('#ciudad_destino').val();
+            datosSolicitud.Anticipo = $('#anticipo').val();
+            datosSolicitud.moneda = parseInt($('#moneda').val());
+            datosSolicitud.id_claseviaje = parseInt($('#clase_viaje').val());
+            datosSolicitud.Estado = "0";
+            datosSolicitud.id_usuario = idUsuario;
+            datosSolicitud.id_actividad = parseInt($('#actividad').val());
+            datosSolicitud.id_motivo = parseInt($('#cmbMotivo').val());
+            datosSolicitud.comentarios = $('#comentarios').val();
+            console.log("Datos: " + datosSolicitud);
+            if (datosSolicitud.fecha_inicio == '' || datosSolicitud.fecha_fin == '' || 
+                datosSolicitud.pais_origen == '' || datosSolicitud.ciudad_origen == '' ||
+                datosSolicitud.pais_destino == '' ||datosSolicitud.ciudad_destino == '' || 
+                datosSolicitud.anticipo == '' || datosSolicitud.moneda == ''){
+                    error = 'Se deben diligenciar todos los campos';
+            }
+            if(isNaN(datosSolicitud.Anticipo)){
+                error = 'No se permiten caracteres en el campo moneda';
+            }
+            if(datosSolicitud.fecha_inicio > datosSolicitud.fecha_fin){
+                error = 'La fecha de inicio no puede ser mayor a la fecha final';
+            }
+    var queryConsec = new Kinvey.Query();
+    queryConsec.descending('id_solicitud');
+    queryConsec.limit(1);
+    var promisemotivo = Kinvey.DataStore.find('Solicitudes', queryConsec, {
+        success: function(consecutivo) {
+            var solicitudId = consecutivo[0].id_solicitud + 1;
+            console.log("Consecutivo: "+ solicitudId);
+            datosSolicitud.id_solicitud = solicitudId; 
+            
+        }
+    });
+    
+    promisemotivo.then( function() {
+        $.mobile.loading('show');
+        
+        if (error != ''){
+            console.log(error);
+            $('#mensaje1').show();
+            $('#mensaje1').addClass('warning');
+            $('#mensaje1').text(error);
+            cargarPaisesO('');
+            cargarPaisesD('');
+            cargarMonedas();
+            cargarClaseViajes();
+            cargarActividades();
+            cargarMotivos();
+            
+        }else{
+            Kinvey.DataStore.save('Solicitudes', datosSolicitud, {
+                success: function(response) {
+                    console.log("Solicitud Creada con Éxito");
+                    $.mobile.changePage("#mensaje", {
+                            transition: "pop",
+                            reverse: false,
+                            changeHash: false
+                    });
+                    $('#mensajesys').val("La solicitud ha sido creada con Éxito con el número " + datosSolicitud.id_solicitud);
+                    $('#mensajesys').attr('readonly', true);
+                    limpiarFormulario();
+                },
+                error: function(error){
+                    console.log(error);
+                    $.mobile.loading('hide');
+                }
+            })
+        }
+        $.mobile.loading('hide');
+    });
 
-	}
+}
 
-	function limpiarFormulario(){
-		$('#fecha_inicio').val("");
-		$('#fecha_fin').val("");
-		$('#pais_origen').val("");
-		$('#pais_origen').text("Pais Origen");
-		$('#ciudad_origen').val("");
-		$('#ciudad_origen').text("Ciudad Origen");
-		$('#pais_destino').val("");
-		$('#pais_destino').text("Pais Destino");
-		$('#ciudad_destino').val("");
-		$('#ciudad_destino').text("Ciudad Destino");
-		$('#anticipo').val("");
-		$('#moneda').val("");
-		$('#moneda').text("Moneda");
-		$('#clase_viaje').val("");
-		$('#clase_viaje').text("Clase de Viaje");
-		$('#actividad').val("");
-		$('#actividad').text("Actividad");
-		$('#cmbMotivo').val("");
-		$('#cmbMotivo').text("Motivo");
-		$('#comentarios').val("");
-	}
+function limpiarFormulario(){
+    $('#fecha_inicio').val("");
+    $('#fecha_fin').val("");
+    $('#pais_origen').val("");
+    $('#pais_origen').text("Pais Origen");
+    $('#ciudad_origen').val("");
+    $('#ciudad_origen').text("Ciudad Origen");
+    $('#pais_destino').val("");
+    $('#pais_destino').text("Pais Destino");
+    $('#ciudad_destino').val("");
+    $('#ciudad_destino').text("Ciudad Destino");
+    $('#anticipo').val("");
+    $('#moneda').val("");
+    $('#moneda').text("Moneda");
+    $('#clase_viaje').val("");
+    $('#clase_viaje').text("Clase de Viaje");
+    $('#actividad').val("");
+    $('#actividad').text("Actividad");
+    $('#cmbMotivo').val("");
+    $('#cmbMotivo').text("Motivo");
+    $('#comentarios').val("");
+}
 
-	function limpiarMensaje(objeto){
-		objeto.removeClass("error");
-		objeto.removeClass("success");
-		objeto.removeClass("warning");
-		objeto.removeClass("info");
-		objeto.text( ' ' );
-		objeto.hide();
-	}
+function limpiarMensaje(objeto){
+    objeto.removeClass("error");
+    objeto.removeClass("success");
+    objeto.removeClass("warning");
+    objeto.removeClass("info");
+    objeto.text( ' ' );
+    objeto.hide();
+}
 
-	function agregarMensaje(objeto, tipoError, mensaje){
-		objeto.removeClass("error");
-		objeto.removeClass("success");
-		objeto.removeClass("warning");
-		objeto.removeClass("info");
-		
-		if(tipoError == 'W'){
-			objeto.addClass('warning');
-		} else if(tipoError == 'S'){
-			objeto.addClass('success');
-		} if(tipoError == 'I'){
-			objeto.addClass('info');
-		} if(tipoError == 'E'){
-			objeto.addClass('error');
-		}
-		objeto.text( mensaje );
-		objeto.show();
-		
-	}
+function agregarMensaje(objeto, tipoError, mensaje){
+    objeto.removeClass("error");
+    objeto.removeClass("success");
+    objeto.removeClass("warning");
+    objeto.removeClass("info");
+    
+    if(tipoError == 'W'){
+        objeto.addClass('warning');
+    } else if(tipoError == 'S'){
+        objeto.addClass('success');
+    } if(tipoError == 'I'){
+        objeto.addClass('info');
+    } if(tipoError == 'E'){
+        objeto.addClass('error');
+    }
+    objeto.text( mensaje );
+    objeto.show();
+    
+}
 
-	function limpiarMensaje1(objeto){
-		objeto.removeClass("error");
-		objeto.removeClass("success");
-		objeto.removeClass("warning");
-		objeto.removeClass("info");
-		objeto.text( ' ' );
-		objeto.hide();
-	}
+function limpiarMensaje1(objeto){
+    objeto.removeClass("error");
+    objeto.removeClass("success");
+    objeto.removeClass("warning");
+    objeto.removeClass("info");
+    objeto.text( ' ' );
+    objeto.hide();
+}
 
-	function agregarMensaje1(objeto, tipoError, mensaje1){
-		objeto.removeClass("error");
-		objeto.removeClass("success");
-		objeto.removeClass("warning");
-		objeto.removeClass("info");
-		
-		if(tipoError == 'W'){
-			objeto.addClass('warning');
-		} else if(tipoError == 'S'){
-			objeto.addClass('success');
-		} if(tipoError == 'I'){
-			objeto.addClass('info');
-		} if(tipoError == 'E'){
-			objeto.addClass('error');
-		}
-		objeto.text( mensaje1 );
-		objeto.show();
-		
-	}
+function agregarMensaje1(objeto, tipoError, mensaje1){
+    objeto.removeClass("error");
+    objeto.removeClass("success");
+    objeto.removeClass("warning");
+    objeto.removeClass("info");
+    
+    if(tipoError == 'W'){
+        objeto.addClass('warning');
+    } else if(tipoError == 'S'){
+        objeto.addClass('success');
+    } if(tipoError == 'I'){
+        objeto.addClass('info');
+    } if(tipoError == 'E'){
+        objeto.addClass('error');
+    }
+    objeto.text( mensaje1 );
+    objeto.show();
+    
+}
 
-	function readDataUrl(file) {
-		window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
-	}
+function readDataUrl(file) {
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, fail);
+}
 
-	function onFileSystemSuccess(fileSystem) {
-		console.log(fileSystem.name);
-		console.log(fileSystem.root.name);
-	}
+function onFileSystemSuccess(fileSystem) {
+    console.log(fileSystem.name);
+    console.log(fileSystem.root.name);
+}
 
-	function fail(evt) {
-		console.log(evt.target.error.code);
-	}
+function fail(evt) {
+    console.log(evt.target.error.code);
+}
