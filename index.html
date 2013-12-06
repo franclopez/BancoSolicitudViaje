@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bancolombia - Aprobaciòn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+  <link href="css/codiqa.ext.min.css" rel="stylesheet">
+  <link href="css/jquery.mobile.theme-1.3.1.min.css" rel="stylesheet">
+  <link href="css/jquery-mobile.css" rel="stylesheet">
+  <link href="css/jquery.mobile.structure-1.3.1.min.css" rel="stylesheet">
+  
+  <script src="phonegap.js"></script>
+  <script src="js/jquery-1.9.1.min.js"></script>
+  <script src="js/jquery.mobile-1.3.1.min.js"></script>
+  <script src="js/codiqa.ext.min.js"></script>
+  <script src="js/kinvey-phonegap-1.1.2.min.js"></script>
+  <!--<script src="//da189i1jfloii.cloudfront.net/js/kinvey-html5-1.1.2.min.js"></script>-->
+  <script src="js/bancolombia-aprobacin.js"></script>
+</head>
+<body>
+  <div data-role="page" data-control-title="Logon" data-theme="b" id="logon"
+  style="background: url('img/fondo.png') repeat">
+      <div data-theme="b" data-role="header">
+          <h2>
+              Aprobación
+          </h2>
+      </div>
+      <div data-role="content" style="padding: 15∂px">
+	     <div style=" text-align:center" data-controltype="image">
+			  <img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
+		 </div>
+         <form id="login_form" action="">
+            <div data-role="fieldcontain" data-controltype="textinput">
+                <label for="username">
+                    Usuario
+                </label>
+                <input name="username" id="username" placeholder="Ingrese usuario..."
+                value="" type="text" required>
+            </div>
+            <div data-role="fieldcontain" data-controltype="textinput">
+                <label for="password">
+                    Contraseña
+                </label>
+                <input name="password" id="password" placeholder="Ingrese contraseña"
+                value="" type="password" required>
+            </div>
+            <input type="submit" data-theme="b" value="Ingresar">
+        </form>
+        <div id="login_error" data-controltype="textblock">
+        </div>
+	</div>
+	<div data-theme="b" data-role="footer" data-position="fixed">
+        <h5>
+            2013 BANCOLOMBIA S.A.
+        </h5>
+    </div>
+  </div>
+  <div data-role="page" data-control-title="List" data-theme="b" id="List"
+  style="background: url('img/fondo.png') no-repeat">
+      <div data-theme="b" data-role="header">
+          <a id="logout" data-role="button" href="#" data-icon="home" data-iconpos="left"
+          class="ui-btn-left">
+              Salir
+          </a>
+          <h2>
+              Aprobación
+          </h2>
+      </div>
+      <div data-role="content" style="padding: 15∂px">
+		  <div style=" text-align:center" data-controltype="image">
+			  <img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
+		  </div>
+		  <div data-controltype="textblock">
+            <p>
+            </p>
+         </div>
+		  <div id="bienvenidaText" data-controltype="textblock">
+          </div>
+          <div data-controltype="textblock">
+            <p>
+                <b>
+                    Las siguientes son las solicitudes de anticipos de viajes que requieren
+                    de su atención.
+                </b>
+            </p>
+         </div>
+         <ul id="solicitudAnticiposList" data-role="listview" data-filter="true" data-divider-theme="b" data-inset="true" data-filter-placeholder="Ingrese Filtro de Consulta...">
+              <li data-role="list-divider" role="heading">
+                  Solicitudes de anticipos de viaje
+              </li>
+         </ul>
+      </div>
+  </div>
+  <div data-role="page" data-control-title="Detail" data-theme="b" id="DetailApr"
+  style="background: url('img/fondo.png') repeat">
+      <div data-theme="b" data-role="header">
+          <a data-role="button" href="#List" data-icon="back" data-iconpos="left"
+          class="ui-btn-left">
+              Volver
+          </a>
+          <h2>
+              Aprobación
+          </h2>
+      </div>
+      <div data-role="content" style="padding: 10px">
+			  <div style=" text-align:center" data-controltype="image">
+				  <img style="width: 288px; height: px" src="img/logo-grupo-bancolombia.png">
+			  </div>
+			  <div data-role="fieldcontain" data-controltype="dateinput">
+                  <label for="dtFechaIni">
+                      Fecha inicio viaje
+                  </label>
+                  <input name="dtFechaIni" id="dtFechaIni" placeholder="" value="" type="date"
+                  data-mini="true">
+              </div>
+              <div data-role="fieldcontain" data-controltype="dateinput">
+                  <label for="dtFechaFin">
+                      Fecha fin viaje
+                  </label>
+                  <input name="dtFechaFin" id="dtFechaFin" placeholder="" value="" type="date"
+                  data-mini="true">
+              </div>
+              <div data-role="fieldcontain" data-controltype="selectmenu">
+                  <label for="txtCiuOri">
+                      Ciudad origen
+                  </label>
+				  <select id="txtCiuOri" name="txtCiuOri" data-theme="c" >
+				  </select>
+              </div>
+              <div data-role="fieldcontain" data-controltype="selectmenu">
+                  <label for="txtCiuDesti">
+                      Ciudad destino
+                  </label>
+				  <select id="txtCiuDesti" name="txtCiuDesti" data-theme="c" >
+				  </select>
+              </div>
+			   <div data-role="fieldcontain" data-controltype="selectmenu">
+                  <label for="cmbAprbActividad">
+                      Actividad
+                  </label>
+				  <select id="cmbAprbActividad" name="cmbAprbActividad" data-theme="c" >
+				  </select>
+              </div>
+		      <div data-role="fieldcontain" data-controltype="selectmenu">
+                  <label for="cmbAprbClase">
+                      Clase de Viaje
+                  </label>
+				  <select id="cmbAprbClase" name="cmbAprbClase" data-theme="c" >
+				  </select>
+              </div>
+			  <div data-role="fieldcontain" data-controltype="selectmenu">
+                  <label for="cmbAprbMotivo">
+                      Motivo
+                  </label>
+				  <select id="cmbAprbMotivo" name="cmbAprbMotivo" data-theme="c" >
+				  </select>
+              </div>
+			  <div data-role="fieldcontain" data-controltype="selectmenu">
+                  <label for="txtMoneda">
+                      Moneda
+                  </label>
+				  <select id="txtMoneda" name="txtMoneda" data-theme="c" >
+				  </select>
+              </div>
+			  <div data-role="fieldcontain" data-controltype="textinput">
+                  <label for="txtMonto">
+                      Monto anticipo
+                  </label>
+                  <input name="" id="txtMonto" placeholder="" value="" type="text" data-mini="true">
+              </div>
+			  <div data-role="fieldcontain" data-controltype="textarea">
+                <label for="comentariosTxt">
+                    Comentarios
+                </label>
+                <textarea name="comentariosTxt" id="comentariosTxt" placeholder=""></textarea>
+            </div>
+			  <div id="aprobarOpt" data-role="fieldcontain" data-controltype="radiobuttons">
+                <fieldset data-role="controlgroup" data-type="horizontal">
+                    <legend>
+                        Seleccione una opción:
+                    </legend>
+                    <input id="radio1" name="" value="1" data-theme="c" type="radio">
+                    <label for="radio1">
+                        Aprobar
+                    </label>
+                    <input id="radio2" name="" value="2" data-theme="c" type="radio">
+                    <label for="radio2">
+                        Rechazar
+                    </label>
+                </fieldset>
+            </div>
+			<div data-role="fieldcontain" data-controltype="textarea">
+                <label for="textarea3">
+                    Información Adicional
+                </label>
+                <textarea name="infAdicionalTxt" id="infAdicionalTxt" placeholder=""></textarea>
+            </div>
+            <a data-role="button" id="guardarSolBtn"  href="#">
+                Guardar
+            </a>
+      </div>
+  </div>
+  
+  <!--  Aqui empezaria lo de Gustavo -->
+  
+ <!--Solicitudes-->
+	
+	<div data-role="page" data-control-title="TV1" data-theme="b" id="solicitud"
+	style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	    <div data-theme="b" data-role="header">
+	        <h3>
+	            Solicitudes
+	        </h3>
+	        <a id="salir" data-role="button" data-theme="b" href="#logon" data-icon="home"
+	        data-iconpos="left" class="ui-btn-left">
+	            Salir
+	        </a>
+	    </div>
+	    <div data-role="content">
+	        <div data-controltype="htmlblock">
+	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+	            <p>
+	            </p>
+	            <div data-role="fieldcontain" data-controltype="searchinput" type="search"
+	            data-mini="true">
+	                <ul id="listusuario" data-role="listview" data-divider-theme="b" data-inset="true">
+	                    <li data-role="list-divider" role="heading">
+	                        Bienvenido
+	                    </li>
+	                </ul>
+	                <ul id="ListaSolicitudes" data-role="listview" data-filter="true" data-divider-theme="b"
+	                data-inset="true" data-filter-placeholder="Ingrese Consulta...">
+	                    <li data-role="list-divider" role="heading">
+	                        Solicitudes
+	                    </li>
+	                </ul>
+	            </div>
+	            <div data-theme="b" data-role="footer" data-position="fixed">
+	                <div data-role="navbar" data-iconpos="top">
+	                    <ul>
+	                        <li>
+	                            <a href="#solicitudanticipo" data-transition="fade" data-theme="" data-icon="check">
+	                                Solicitar
+	                            </a>
+	                        </li>
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!--/Solicitudes-->
+
+	<!--PopUp-->
+	<div data-role="page" data-control-title="TV1_PU" data-theme="b" id="popup"
+	style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	    <div data-theme="b" data-role="header">
+	        <h3>
+	            Detalle
+	        </h3>
+	        <a data-role="button" href="#solicitud" data-icon="refresh" data-iconpos="left">
+	            Atras
+	        </a>
+	    </div>
+	    <div data-role="content">
+	        <div style="" data-controltype="image">
+	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+	        </div>
+	        <ul id="listsolicitud" data-role="listview" data-divider-theme="b" data-inset="true">
+	            <li data-role="list-divider" role="heading">
+	                Solicitud
+	            </li>
+	        </ul>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="infecha_inicio">
+	                Fecha Inicio
+	            </label>
+	            <input name="" id="infecha_inicio" placeholder="" value="" type="text"
+	            data-mini="true">
+	            <div data-role="fieldcontain" data-controltype="textinput">
+	                <label for="infecha_final">
+	                    Fecha Final
+	                </label>
+	                <input name="" id="infecha_final" placeholder="" value="" type="text"
+	                data-mini="true">
+	            </div>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inpais_origen">
+	                Pa&iacutes Origen
+	            </label>
+	            <input name="" id="inpais_origen" placeholder="" value="" type="text"
+	            data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inciudad_origen">
+	                Ciudad Origen
+	            </label>
+	            <input name="" id="inciudad_origen" placeholder="" value="" type="text"
+	            data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inpais_destino">
+	                Pa&iacutes Destino
+	            </label>
+	            <input name="" id="inpais_destino" placeholder="" value="" type="text"
+	            data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inciudad_destino">
+	                Ciudad Destino
+	            </label>
+	            <input name="" id="inciudad_destino" placeholder="" value="" type="text"
+	            data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inactividad">
+	                Actividad
+	            </label>
+	            <input name="" id="inactividad" placeholder="" value="" type="text" data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inclase_viaje">
+	                Clase de Viaje
+	            </label>
+	            <input name="" id="inclase_viaje" placeholder="" value="" type="text"
+	            data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inmotivo">
+	                Motivo
+	            </label>
+	            <input name="" id="inmotivo" placeholder="" value="" type="text" data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="inestado">
+	                Estado
+	            </label>
+	            <input name="" id="inestado" placeholder="" value="" type="text">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textarea">
+	            <label for="tadetalle_estado">
+	                Detalle Estado
+	            </label>
+	            <textarea name="" id="tadetalle_estado" placeholder="" data-mini="true"></textarea>
+	        </div>
+	    </div>
+	</div>
+	<!--/PopUp-->
+	
+	<!--SolicitudAnticipo-->
+	<div data-role="page" data-control-title="TV2" data-theme="b" id="solicitudanticipo"
+	style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	    <div data-theme="b" data-role="header">
+	        <h3>
+	            Solicitud
+	        </h3>
+	        <a id="button2" data-role="button" data-inline="true" data-theme="b" href="#solicitud"
+	        data-icon="back" data-iconpos="left">
+	            Atras
+	        </a>
+	        <a id="salir2" data-role="button" data-theme="b" href="#logon" data-icon="refresh"
+	        data-iconpos="left" class="ui-btn-right">
+	            Salir
+	        </a>
+	    </div>
+	    <div data-role="content">
+	        <div style="" data-controltype="image">
+	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="dateinput">
+	            <label for="fecha_inicio">
+	                Fecha Inicio
+	            </label>
+	            <input name="" id="fecha_inicio" placeholder="" value="" type="date" data-mini="true">
+	            <div data-role="fieldcontain" data-controltype="dateinput">
+	                <label for="fecha_fin">
+	                    Fecha Fin
+	                </label>
+	                <input name="" id="fecha_fin" placeholder="" value="" type="date" data-mini="true">
+	            </div>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="pais_origen">
+	                Pa&iacutes Origen
+	            </label>
+	            <select id="pais_origen" name="" data-mini="true">
+	                <option value="option1">
+	                    Pa&iacutes Origen
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="ciudad_origen">
+	                Ciudad Origen
+	            </label>
+	            <select id="ciudad_origen" name="" data-mini="true">
+	                <option value="option1">
+	                    Ciudad Origen
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="pais_destino">
+	                Pais Destino
+	            </label>
+	            <select id="pais_destino" name="" data-mini="true">
+	                <option value="option1">
+	                    Pa&iacutes Destino
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="ciudad_destino">
+	                Ciudad Destino
+	            </label>
+	            <select id="ciudad_destino" name="" data-mini="true">
+	                <option value="option1">
+	                    Ciudad Destino
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textinput">
+	            <label for="anticipo">
+	                Anticipo
+	            </label>
+	            <input name="" id="anticipo" placeholder="" value="" type="text" data-mini="true">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="moneda">
+	                Moneda
+	            </label>
+	            <select id="moneda" name="" data-mini="true">
+	                <option value="option1">
+	                    Moneda
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="clase_viaje">
+	                Clase de viaje
+	            </label>
+	            <select id="clase_viaje" name="" data-mini="true">
+	                <option value="">
+	                    Clase de Viaje
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="actividad">
+	                Actividad
+	            </label>
+	            <select id="actividad" name="" data-mini="true">
+	                <option value="">
+	                    Actividad
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="selectmenu">
+	            <label for="cmbMotivo">
+	                Motivo
+	            </label>
+	            <select id="cmbMotivo" name="cmbMotivo" data-mini="true">
+	                <option value="">
+	                    Motivo
+	                </option>
+	            </select>
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textarea">
+	            <label for="comentarios">
+	                comentarios
+	            </label>
+	            <textarea name="" id="comentarios" placeholder="" data-mini="true"></textarea>
+	        </div>
+	        <div data-controltype="htmlblock">
+	            <form action="">
+	                <div id="mensaje1" data-controltype="textblock" class="warning">
+	                </div>
+	            </form>
+	        </div>
+	    </div>
+	    <div data-theme="a" data-role="footer" data-position="fixed">
+	        <div id="enviar" data-role="navbar" data-iconpos="top">
+	            <ul>
+	                <li>
+	                    <a href="#solicitudanticipo" data-transition="fade" data-theme="b" data-icon="check">
+	                        Enviar
+	                    </a>
+	                </li>
+	            </ul>
+	        </div>
+	    </div>
+	</div>
+	<!--/SolicitudAnticipo-->
+	
+	<!--Mensaje-->
+	
+	<div data-role="page" data-control-title="TV3" id="mensaje" style="background: url('https://s3.amazonaws.com/assets.codiqa.com/ZZdWpXJSlWUgy3FH1yBg_fondo.png') repeat">
+	    <div data-theme="b" data-role="header">
+	        <a id="salir3" data-role="button" href="#logon" data-icon="refresh" data-iconpos="left"
+	        class="ui-btn-right">
+	            Salir
+	        </a>
+	        <a data-role="button" href="#solicitudanticipo" data-icon="forward" data-iconpos="left"
+	        class="ui-btn-left">
+	            Atras
+	        </a>
+	        <h3>
+	        </h3>
+	    </div>
+	    <div data-role="content">
+	        <div style="" data-controltype="image">
+	            <img style="width: 288px; height: px" src="https://s3.amazonaws.com/assets.codiqa.com/bUDWkIQxQca86IFFNzh4_Logo-Grupo-Bancolombia.png">
+	        </div>
+	        <div data-role="fieldcontain" data-controltype="textarea">
+	            <label for="mensajesys">
+	                Mensaje del Sistema
+	            </label>
+	            <textarea name="" id="mensajesys" placeholder="" data-mini="true"></textarea>
+	        </div>
+	    </div>
+	    <div data-theme="a" data-role="footer" data-position="fixed">
+	        <div data-role="navbar" data-iconpos="top">
+	            <ul>
+	                <li>
+	                    <a href="#solicitud" data-transition="fade" data-theme="b" data-icon="">
+	                        Finalizar
+	                    </a>
+	                </li>
+	            </ul>
+	        </div>
+	    </div>
+	</div>
+</body>
+</html>
