@@ -231,7 +231,7 @@ $(function() {
 				$('#cmbAprbMotivo').selectmenu('disable');
 			});
 			//cargar monedas
-			var promiseMotivo = Kinvey.DataStore.find('monedas', null, {
+			var promiseMoneda = Kinvey.DataStore.find('monedas', null, {
 						success: function(items) {
 						   var list = $("#txtMoneda");
 						   $.each(items, function(index, item) {
@@ -239,7 +239,7 @@ $(function() {
 						   });
 						}
 			});
-			promiseMotivo.then( function() {
+			promiseMoneda.then( function() {
 				$("#txtMoneda").val(solicitudInfo.data.Moneda).selectmenu('refresh');
 				$('#txtMoneda').selectmenu('disable');
 			});
