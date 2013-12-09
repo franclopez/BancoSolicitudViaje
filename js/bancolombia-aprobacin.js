@@ -650,17 +650,16 @@ function consultarActividad(id_actividad){
 }
 
 function consultarDetalle(){
+	$.mobile.loading('show');
     var user = Kinvey.getActiveUser();
     var query = new Kinvey.Query();
     query.equalTo('id_solicitud', solicitud);
     var estado;
     $('#listsolicitud').empty();
     $('#listsolicitud').append('<li data-role="list-divider" data-divider-theme="b" role="heading">Solicitud ' + solicitud + '</li>');
-    
     var promiseSolicitudes = Kinvey.DataStore.find('Solicitudes', query, {
            success: function(solicitud1) {
               console.log("Consulta satisfactoria de Solicitud");
-                  $.mobile.loading('show');
                   var id_motivo = solicitud1[0].id_motivo;
                   var id_claseviaje = solicitud1[0].id_claseviaje;
                   var id_actividad = solicitud1[0].id_actividad;
@@ -709,9 +708,10 @@ function consultarDetalle(){
                console.log("No ");
                $.mobile.loading('hide');
            }
-        });
-    $.mobile.loading('hide');
-   
+     });
+	 promiseSolicitudes.then(function(){
+		$.mobile.loading('hide');
+	 });
 }
 
 function cargarPaisesO(id_pais){
