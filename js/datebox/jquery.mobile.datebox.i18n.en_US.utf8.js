@@ -9,19 +9,19 @@
  */
 
 jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
-	'en': {
-		setDateButtonLabel: "Set Date",
-		setTimeButtonLabel: "Set Time",
+	'es': {
+		setDateButtonLabel: "Seleccione Fecha",
+		setTimeButtonLabel: "Seleccione Hora",
 		setDurationButtonLabel: "Set Duration",
 		calTodayButtonLabel: "Jump to Today",
-		titleDateDialogLabel: "Choose Date",
-		titleTimeDialogLabel: "Choose Time",
-		daysOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-		daysOfWeekShort: ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"],
-		monthsOfYear: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-		monthsOfYearShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-		durationLabel: ["Days", "Hours", "Minutes", "Seconds"],
-		durationDays: ["Day", "Days"],
+		titleDateDialogLabel: "Seleccione Fecha",
+		titleTimeDialogLabel: "Seleccione Fecha",
+		daysOfWeek: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+		daysOfWeekShort: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+		monthsOfYear: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+		monthsOfYearShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+		durationLabel: ["Dias", "Horas", "Minutos", "Segundos"],
+		durationDays: ["Dia", "Dias"],
 		tooltip: "Open Date Picker",
 		nextMonth: "Next Month",
 		prevMonth: "Previous Month",
@@ -43,6 +43,6 @@ jQuery.extend(jQuery.mobile.datebox.prototype.options.lang, {
 	}
 });
 jQuery.extend(jQuery.mobile.datebox.prototype.options, {
-	useLang: 'en'
+	useLang: 'es'
 });
 
