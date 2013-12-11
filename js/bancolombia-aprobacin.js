@@ -35,19 +35,22 @@ $(function() {
 		console.log(username);
 		console.log(password);
 		var user = Kinvey.getActiveUser();
-		
-		var promiseLogout = Kinvey.User.logout({
-				success: function() {
-					console.log("Desconectando");
-				},
-				error: function(e) {
-					console.log("Usuario no conectado");
-				}
-		});
-		promiseLogout.then(function() {
-			console.log("a acabo de hacer logout..");
-		});
-		Kinvey.User.login(username, password, {
+		console.log(user);
+		if(user != null) {
+		    var promiseLogout = Kinvey.User.logout({
+                success: function() {
+                        console.log("Desconectando");
+                    },
+                    error: function(e) {
+                        console.log("Usuario no conectado");
+                    }
+            });
+            promiseLogout.then(function() {
+                console.log("acabo de hacer logout..");
+                console.log("then logout.");
+            });
+		}
+		var promiseLogin = Kinvey.User.login(username, password, {
 			success: function() {
 				var esAprobador = false;
 				console.log("Loggeado.");
@@ -317,20 +320,9 @@ $(function() {
 		$.mobile.changePage('#List');
 	};
 	
-	var showAlert = function (message, title) {
-		if (navigator.notification) {
-			navigator.notification.alert(message, null, title, 'OK');
-		} else {
-			alert(title ? (title + ": " + message) : message);
-		}
-	};
 	
 	//Inicio Insert
-	
-	 $("#ingresar").on("click", function() {
-                validarUsuario();
-            });
-            
+           
             $("#salir").on("click", function() {
                 salir();
             });
@@ -407,11 +399,19 @@ $(function() {
               
             $("#enviar").on("click", function() {
                 ingresarSolicitud();
-                limpiarFormulario();
+                //limpiarFormulario();
             });
 	//Fin Insert
 	
 });
+
+    showAlert = function (message, title) {
+        if (navigator.notification) {
+            navigator.notification.alert(message, null, title, 'OK');
+        } else {
+            alert(title ? (title + ": " + message) : message);
+        }
+    };
 
 	showConfirmLogout = function() {
 			if(navigator.notification){
@@ -907,57 +907,49 @@ $(function() {
 		if(isNaN(datosSolicitud.Anticipo)){
 			error = 'No se permiten caracteres en el campo moneda';
 		}
-		/*if(datosSolicitud.fecha_inicio > datosSolicitud.fecha_fin){
+		if( new Date(datosSolicitud.fecha_inicio) > new Date(datosSolicitud.fecha_fin) ){
 			error = 'La fecha de inicio no puede ser mayor a la fecha final';
-		}*/
-		var queryConsec = new Kinvey.Query();
-		queryConsec.descending('id_solicitud');
-		queryConsec.limit(1);
-		var promisemotivo = Kinvey.DataStore.find('Solicitudes', queryConsec, {
-			success: function(consecutivo) {
-				var solicitudId = consecutivo[0].id_solicitud + 1;
-				datosSolicitud.id_solicitud = solicitudId; 
-				
-			}
-		});
-		
-		promisemotivo.then( function() {
-			$.mobile.loading('show');
-			
-			if (error != ''){
-				console.log(error);
-				$('#mensaje1').show();
-				$('#mensaje1').addClass('warning');
-				$('#mensaje1').text(error);
-				cargarPaisesO('');
-				cargarPaisesD('');
-				cargarMonedas('');
-				cargarClaseViajes();
-				cargarActividades();
-				cargarMotivos();
-				
-			}else{
-				Kinvey.DataStore.save('Solicitudes', datosSolicitud, {
-					success: function(response) {
-						console.log("Solicitud Creada con Éxito");
-						$.mobile.changePage("#mensaje", {
-								transition: "pop",
-								reverse: false,
-								changeHash: false
-						});
-						$('#mensajesys').val("La solicitud ha sido creada con Éxito con el número " + datosSolicitud.id_solicitud);
-						$('#mensajesys').attr('readonly', true);
-						limpiarFormulario();
-					},
-					error: function(error){
-						console.log(error);
-						$.mobile.loading('hide');
-					}
-				})
-			}
-			$.mobile.loading('hide');
-		});
-
+		}
+		if (error != ''){
+            console.log(error);
+            /*$('#mensaje1').show();
+            $('#mensaje1').addClass('warning');
+            $('#mensaje1').text(error);*/
+            showAlert(error,"Error");
+        } else {
+        		var queryConsec = new Kinvey.Query();
+        		queryConsec.descending('id_solicitud');
+        		queryConsec.limit(1);
+        		var promisemotivo = Kinvey.DataStore.find('Solicitudes', queryConsec, {
+        			success: function(consecutivo) {
+        				var solicitudId = consecutivo[0].id_solicitud + 1;
+        				datosSolicitud.id_solicitud = solicitudId; 
+        				
+        			}
+        		});
+        		
+        		promisemotivo.then( function() {
+        			$.mobile.loading('show');
+        			Kinvey.DataStore.save('Solicitudes', datosSolicitud, {
+        				success: function(response) {
+        					console.log("Solicitud Creada con Éxito");
+        					$.mobile.changePage("#mensaje", {
+        							transition: "pop",
+        							reverse: false,
+        							changeHash: false
+        					});
+        					$('#mensajesys').val("La solicitud ha sido creada con Éxito con el número " + datosSolicitud.id_solicitud);
+        					$('#mensajesys').attr('readonly', true);
+        					limpiarFormulario();
+        				},
+        				error: function(error){
+        					console.log(error);
+        					$.mobile.loading('hide');
+        				}
+        			});
+        			$.mobile.loading('hide');
+        		});
+        }
 	}
 
 	function limpiarFormulario(){
