@@ -279,6 +279,7 @@ $(function() {
 						$.mobile.loading('hide');
 						showAlert("Informacion Registrada con Exito","INFO");
 						goHomeList();
+						
 					},
 					error: function(error){
 						console.log(error);
@@ -595,7 +596,7 @@ $(function() {
 					  }else{
 						estado = "Rechazado";  
 					  }
-					  $('#ListaSolicitudes').append('<li data-theme="c"><a href="" data-transition="slide" onclick="cargarPopUp('+solicitudes[i].id_solicitud+')" data-id="' 
+					  $('#ListaSolicitudes').append('<li data-theme="c"><a href="#" onclick="cargarPopUp('+solicitudes[i].id_solicitud+')" data-id="' 
 					  +solicitudes[i].id_solicitud + '"><b class="highlight">N° Solicitud:</b>  ' + solicitudes[i].id_solicitud + '<br/><b class="highlight">Fecha:</b> '
 					  + solicitudes[i].fecha_inicio + '<br/><b class="highlight">Estado:</b> ' + estado +'</a></li>');
 					  $('#ListaSolicitudes').listview('refresh');
