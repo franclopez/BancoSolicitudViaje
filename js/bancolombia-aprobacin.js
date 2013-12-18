@@ -48,61 +48,121 @@ $(function() {
             promiseLogout.then(function() {
                 console.log("acabo de hacer logout..");
                 console.log("then logout.");
+                
+                var promiseLogin = Kinvey.User.login(username, password, {
+        			success: function() {
+        				var esAprobador = false;
+        				console.log("Loggeado.");
+        				usernameField.val(''); //clear fields
+        				passwordField.val('');
+        				console.log("Redireccionando a Home.");
+        				var user = Kinvey.getActiveUser();
+        				var query = new Kinvey.Query();
+        				query.equalTo('IdUsuario', user._id);
+        				var query2 = new Kinvey.Query();
+        				query2.equalTo('Rol', 'APPROVER');
+        				query.and(query2);
+        				var promiseRoles = Kinvey.DataStore.find('UsuarioRol', query, {
+        					success: function(items) {
+        					   $.each(items, function(index, item) {
+        						  console.log("Es un usuario aprobador");
+        						  esAprobador = true;
+        						  console.log(item._id);
+        						  $.mobile.changePage("#List", {
+        								transition: "pop",
+        								reverse: false,
+        								changeHash: false
+        						});
+        						$.mobile.loading('hide');
+        					   });
+        					},
+        					error: function(e) {
+        						console.log("Problemas consultando roles de usuario");
+        						$.mobile.loading('hide');
+        					}
+        				});
+        				promiseRoles.then(function() {
+        					if(!esAprobador) {
+        						console.log("No es usuario aprobador..");
+        						idUsuario = user.username;
+        						console.log(idUsuario);
+        						nombreUsuario = user.first_name + ' ' + user.last_name;
+        						$.mobile.changePage("#solicitud", {
+        								transition: "pop",
+        								reverse: false,
+        								changeHash: false
+        						});
+        						$.mobile.loading('hide');
+        					}
+        				});
+        			},
+        			error: function(error){
+        				console.log(error);
+        				$.mobile.loading('hide');
+        				loginError.text('Por Favor Ingrese Un Usuario y Contrasena Validos');
+        			}
+        	  });
+                
+                
             });
+		} else {
+			
+			var promiseLogin = Kinvey.User.login(username, password, {
+    			success: function() {
+    				var esAprobador = false;
+    				console.log("Loggeado.");
+    				usernameField.val(''); //clear fields
+    				passwordField.val('');
+    				console.log("Redireccionando a Home.");
+    				var user = Kinvey.getActiveUser();
+    				var query = new Kinvey.Query();
+    				query.equalTo('IdUsuario', user._id);
+    				var query2 = new Kinvey.Query();
+    				query2.equalTo('Rol', 'APPROVER');
+    				query.and(query2);
+    				var promiseRoles = Kinvey.DataStore.find('UsuarioRol', query, {
+    					success: function(items) {
+    					   $.each(items, function(index, item) {
+    						  console.log("Es un usuario aprobador");
+    						  esAprobador = true;
+    						  console.log(item._id);
+    						  $.mobile.changePage("#List", {
+    								transition: "pop",
+    								reverse: false,
+    								changeHash: false
+    						});
+    						$.mobile.loading('hide');
+    					   });
+    					},
+    					error: function(e) {
+    						console.log("Problemas consultando roles de usuario");
+    						$.mobile.loading('hide');
+    					}
+    				});
+    				promiseRoles.then(function() {
+    					if(!esAprobador) {
+    						console.log("No es usuario aprobador..");
+    						idUsuario = user.username;
+    						console.log(idUsuario);
+    						nombreUsuario = user.first_name + ' ' + user.last_name;
+    						$.mobile.changePage("#solicitud", {
+    								transition: "pop",
+    								reverse: false,
+    								changeHash: false
+    						});
+    						$.mobile.loading('hide');
+    					}
+    				});
+    			},
+    			error: function(error){
+    				console.log(error);
+    				$.mobile.loading('hide');
+    				loginError.text('Por Favor Ingrese Un Usuario y Contrasena Validos');
+    			}
+    	  });
+			
 		}
-		var promiseLogin = Kinvey.User.login(username, password, {
-			success: function() {
-				var esAprobador = false;
-				console.log("Loggeado.");
-				usernameField.val(''); //clear fields
-				passwordField.val('');
-				console.log("Redireccionando a Home.");
-				var user = Kinvey.getActiveUser();
-				var query = new Kinvey.Query();
-				query.equalTo('IdUsuario', user._id);
-				var query2 = new Kinvey.Query();
-				query2.equalTo('Rol', 'APPROVER');
-				query.and(query2);
-				var promiseRoles = Kinvey.DataStore.find('UsuarioRol', query, {
-					success: function(items) {
-					   $.each(items, function(index, item) {
-						  console.log("Es un usuario aprobador");
-						  esAprobador = true;
-						  console.log(item._id);
-						  $.mobile.changePage("#List", {
-								transition: "pop",
-								reverse: false,
-								changeHash: false
-						});
-						$.mobile.loading('hide');
-					   });
-					},
-					error: function(e) {
-						console.log("Problemas consultando roles de usuario");
-						$.mobile.loading('hide');
-					}
-				});
-				promiseRoles.then(function() {
-					if(!esAprobador) {
-						console.log("No es usuario aprobador..");
-						idUsuario = user.username;
-						console.log(idUsuario);
-						nombreUsuario = user.first_name + ' ' + user.last_name;
-						$.mobile.changePage("#solicitud", {
-								transition: "pop",
-								reverse: false,
-								changeHash: false
-						});
-						$.mobile.loading('hide');
-					}
-				});
-			},
-			error: function(error){
-				console.log(error);
-				$.mobile.loading('hide');
-				loginError.text('Por Favor Ingrese Un Usuario y Contrasena Validos');
-			}
-	  });
+		
 	  return false;
 	});
             
@@ -1061,4 +1121,8 @@ $(function() {
 
 	function fail(evt) {
 		console.log(evt.target.error.code);
+	}
+	
+	function cargarMensajeInicio(){
+		loginError.text('Para solicitudes de viaje ingrese con "solicitante",  aprobaciones ingresar con "aprobador", la clave es "123".');
 	}
