@@ -23,6 +23,7 @@ $(function() {
 	var loginForm = $('#login_form');
 	var loginError =  $('#login_error');
 	console.log("Log In");
+	loginError.text('Para solicitudes de viaje ingrese con "solicitante",  aprobaciones ingresar con "aprobador", la clave es "123".');
 	loginForm.on('submit', function(e) {
 		e.preventDefault();
 		loginError.text('');
@@ -1123,6 +1124,3 @@ $(function() {
 		console.log(evt.target.error.code);
 	}
 	
-	function cargarMensajeInicio(){
-		loginError.text('Para solicitudes de viaje ingrese con "solicitante",  aprobaciones ingresar con "aprobador", la clave es "123".');
-	}
