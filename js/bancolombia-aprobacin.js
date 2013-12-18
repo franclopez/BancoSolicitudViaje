@@ -27,7 +27,7 @@ $(function() {
 	$(document).on("pageshow", "#logon", function () {
 		loginError.text('Para solicitudes de viaje ingrese con "solicitante",  aprobaciones ingresar con "aprobador", la clave es "123".');
     });
-	
+	loginError.text('Para solicitudes de viaje ingrese con "solicitante",  aprobaciones ingresar con "aprobador", la clave es "123".');
 	loginForm.on('submit', function(e) {
 		e.preventDefault();
 		loginError.text('');
